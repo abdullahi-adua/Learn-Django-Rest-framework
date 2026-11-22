@@ -16,8 +16,21 @@ MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
 # ─── Email (console backend in dev) ──────────
-MAILERS = {
+"""MAILERS = {
     "default": {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
+    },
+}"""
+
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "smtp.gmail.com",
+            "port": 587,
+            "use_tls": True,
+            "username": env("USERNAME"), 
+            "password": env("PASSWORD"),     
+        },
     },
 }

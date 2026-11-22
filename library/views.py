@@ -23,7 +23,8 @@ from .pagination import StandardPagination
 from django.db.models import Prefetch
 # For ratelimiting
 from rest_framework.throttling import UserRateThrottle,AnonRateThrottle
-
+#For celery to work for register
+from .tasks import send_welcome_email_task
 #Class APIView
 """
 class AuthorAPIView(APIView):
@@ -89,14 +90,16 @@ class RegisterAPIView(APIView):
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():             
-            user = serializer.save()           
+        if serializer.is_valid():
+            user = serializer.save()
+            
+            send_welcome_email_task.delay(user.email) 
+            
             return Response(
                 {'id': user.id, 'username': user.username},
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 # View Set
 
