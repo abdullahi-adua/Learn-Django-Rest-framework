@@ -59,6 +59,23 @@ services:
       - db
       - redis
 
+  beat:
+    build: .
+    command: celery -A library_api beat -l info
+    volumes:
+      - .:/app
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_HOST=db
+      - DJANGO_SETTINGS_MODULE=library_api.settings.dev
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
 volumes:
   postgres_data:
   media_files:

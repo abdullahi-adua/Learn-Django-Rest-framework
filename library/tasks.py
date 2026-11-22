@@ -15,3 +15,9 @@ def send_welcome_email_task(email_address):
         fail_silently=False,
     )
     return f"Email sent to {email_address}"
+
+@shared_task
+def send_daily_summary():
+    # In a real app, you would query the DB here.
+    print("📅 Generating daily summary for all users...")
+    return "Daily summary generated."

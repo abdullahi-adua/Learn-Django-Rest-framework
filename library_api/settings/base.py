@@ -207,3 +207,13 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+
+# The Scheduler
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'send-daily-summary-every-10-seconds': {
+        'task': 'library.tasks.send_daily_summary',
+        'schedule': 100.0, # Run every 10 seconds
+    },
+}

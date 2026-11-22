@@ -15,12 +15,6 @@ INSTALLED_APPS += ['debug_toolbar']
 MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
-# ─── Email (console backend in dev) ──────────
-"""MAILERS = {
-    "default": {
-        "BACKEND": "django.core.mail.backends.console.EmailBackend",
-    },
-}"""
 
 MAILERS = {
     "default": {
