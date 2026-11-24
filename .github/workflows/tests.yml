@@ -1,0 +1,39 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create .env file for testing
+      run: |
+        echo "SECRET_KEY=github-actions-test-secret-key" >> .env
+        echo "DEBUG=True" >> .env
+        echo "ALLOWED_HOSTS=localhost,127.0.0.1,web" >> .env
+        echo "DATABASE_URL=postgres://postgres:testpassword@db:5432/library_api" >> .env
+        echo "POSTGRES_PASSWORD=testpassword" >> .env
+        echo "CELERY_BROKER_URL=redis://redis:6379/0" >> .env
+
+    - name: Build and start Docker containers
+      run: docker compose up -d --build
+
+    - name: Wait for Postgres to be ready
+      run: |
+        sleep 10
+        docker compose exec -T db pg_isready -U postgres -d library_api
+
+    - name: Run Tests
+      run: docker compose exec -T web python manage.py test
+
+    - name: Shut down containers
+      run: docker compose down -v
+      if: always()
