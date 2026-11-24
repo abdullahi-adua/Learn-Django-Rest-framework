@@ -22,6 +22,7 @@ jobs:
         echo "DATABASE_URL=postgres://postgres:testpassword@db:5432/library_api" >> .env
         echo "POSTGRES_PASSWORD=testpassword" >> .env
         echo "CELERY_BROKER_URL=redis://redis:6379/0" >> .env
+        echo "DATABASE_HOST=db" >> .env
 
     - name: Build and start Docker containers
       run: docker compose up -d --build
@@ -30,6 +31,10 @@ jobs:
       run: |
         sleep 10
         docker compose exec -T db pg_isready -U postgres -d library_api
+
+    # NEW STEP: Show logs if something goes wrong
+    - name: Show Web Logs
+      run: docker compose logs web
 
     - name: Run Tests
       run: docker compose exec -T web python manage.py test
