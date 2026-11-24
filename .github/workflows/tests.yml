@@ -23,6 +23,8 @@ jobs:
         echo "POSTGRES_PASSWORD=testpassword" >> .env
         echo "CELERY_BROKER_URL=redis://redis:6379/0" >> .env
         echo "DATABASE_HOST=db" >> .env
+        echo "USERNAME=dummy-test-email@gmail.com" >> .env
+        echo "PASSWORD=dummy-test-password" >> .env
 
     - name: Build and start Docker containers
       run: docker compose up -d --build
